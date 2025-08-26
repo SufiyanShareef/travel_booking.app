@@ -1,0 +1,31 @@
+# .gitignore
+
+# Virtual environment
+venv/
+.env
+
+# Database
+*.sqlite3
+*.db
+
+# Django secret key
+.env
+
+# PyCharm
+.idea/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Static files collected for production (we will generate this later)
+staticfiles/
