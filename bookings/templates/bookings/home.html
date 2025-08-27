@@ -1,0 +1,22 @@
+{% extends 'bookings/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto text-center">
+        <h1 class="display-4 mb-4">Welcome to TravelBooker</h1>
+        <p class="lead">Book your next adventure with ease</p>
+        
+        {% if not user.is_authenticated %}
+        <div class="mt-5">
+            <a href="{% url 'bookings:register' %}" class="btn btn-primary btn-lg me-3">Get Started</a>
+            <a href="{% url 'bookings:login' %}" class="btn btn-outline-primary btn-lg">Login</a>
+        </div>
+        {% else %}
+        <div class="mt-5">
+            <a href="{% url 'bookings:travel-list' %}" class="btn btn-primary btn-lg me-3">Browse Travel Options</a>
+            <a href="{% url 'bookings:booking-list' %}" class="btn btn-outline-primary btn-lg">View My Bookings</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
