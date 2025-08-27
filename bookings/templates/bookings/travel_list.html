@@ -1,0 +1,88 @@
+{% extends 'bookings/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="mb-4">Available Travel Options</h2>
+
+        <!-- Filter Form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Filter Options</h5>
+            </div>
+            <div class="card-body">
+                <form method="GET" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Type</label>
+                        <select name="type" class="form-select">
+                            <option value="">All Types</option>
+                            {% for value, display in TRAVEL_TYPES %}
+                            <option value="{{ value }}" {% if value == selected_type %}selected{% endif %}>
+                                {{ display }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">From</label>
+                        <input type="text" name="source" class="form-control" placeholder="Source"
+                            value="{{ request.GET.source }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">To</label>
+                        <input type="text" name="destination" class="form-control" placeholder="Destination"
+                            value="{{ request.GET.destination }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Date</label>
+                        <input type="date" name="date" class="form-control" value="{{ request.GET.date }}">
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">Apply Filters</button>
+                        <a href="{% url 'bookings:travel-list' %}" class="btn btn-outline-secondary">Clear</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Travel Options List -->
+        {% if travel_options %}
+        <!-- DEBUG: Show raw count -->
+        <div class="alert alert-info">
+            DEBUG: Found {{ travel_options.count }} travel options in the database.
+        </div>
+        <div class="row">
+            {% for travel in travel_options %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            {{ travel.get_type_display }}: {{ travel.source }} to {{ travel.destination }}
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <strong>Departure:</strong> {{ travel.departure_time|date:"M d, Y H:i" }}<br>
+                            <strong>Price:</strong> ${{ travel.price }}<br>
+                            <strong>Available Seats:</strong> {{ travel.available_seats }}
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        {% if travel.available_seats > 0 %}
+                        <a href="{% url 'bookings:booking-create' travel.id %}" class="btn btn-primary">Book Now</a>
+                        {% else %}
+                        <button class="btn btn-secondary" disabled>Sold Out</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            No travel options found matching your criteria.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

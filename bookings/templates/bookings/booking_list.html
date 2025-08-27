@@ -1,0 +1,65 @@
+{% extends 'bookings/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="mb-4">My Bookings</h2>
+        
+        {% if bookings %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Travel Details</th>
+                            <th>Seats</th>
+                            <th>Total Price</th>
+                            <th>Booking Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                        <tr>
+                            <td>#{{ booking.id }}</td>
+                            <td>
+                                <strong>{{ booking.travel_option.get_type_display }}</strong><br>
+                                {{ booking.travel_option.source }} to {{ booking.travel_option.destination }}<br>
+                                <small>{{ booking.travel_option.departure_time|date:"M d, Y H:i" }}</small>
+                            </td>
+                            <td>{{ booking.number_of_seats }}</td>
+                            <td>${{ booking.total_price }}</td>
+                            <td>{{ booking.booking_date|date:"M d, Y" }}</td>
+                            <td>
+                                {% if booking.status == 'CF' %}
+                                    <span class="badge bg-success">Confirmed</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Cancelled</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if booking.status == 'CF' %}
+                                    <form method="POST" action="{% url 'bookings:booking-cancel' booking.id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                                onclick="return confirm('Are you sure you want to cancel this booking?')">
+                                            Cancel
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                You don't have any bookings yet. 
+                <a href="{% url 'bookings:travel-list' %}" class="alert-link">Browse travel options</a> to make your first booking!
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'bookings/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-center">Book Your Trip</h3>
+            </div>
+            <div class="card-body">
+                <!-- Travel Option Details -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5>Trip Details</h5>
+                        <p><strong>Type:</strong> {{ travel_options.get_type_display }}</p>
+                        <p><strong>Route:</strong> {{ travel_options.source }} to {{ travel_options.destination }}</p>
+                        <p><strong>Departure:</strong> {{ travel_options.departure_time|date:"M d, Y H:i" }}</p>
+                        <p><strong>Price per seat:</strong> ${{ travel_options.price }}</p>
+                        <p><strong>Available seats:</strong> {{ travel_options.available_seats }}</p>
+                    </div>
+                </div>
+
+                <!-- Booking Form -->
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="number_of_seats" class="form-label">Number of Seats</label>
+                        <input type="number" class="form-control" id="number_of_seats" name="number_of_seats" 
+                               min="1" max="{{ travel_options.available_seats }}" value="1" required>
+                        <div class="form-text">Maximum {{ travel_option.available_seats }} seats available.</div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <strong>Total Price: $<span id="total-price">{{ travel_options.price }}</span></strong>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg">Confirm Booking</button>
+                        <a href="{% url 'bookings:travel-list' %}" class="btn btn-outline-secondary btn-lg">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Calculate total price dynamically
+     document.getElementById('number_of_seats').addEventListener('input', function() {
+      // Inject the price from Django context, ensure it's a float and no quotes around it
+      const pricePerSeat = {{ travel_options.price|floatformat:2 }};
+      const seats = parseInt(this.value, 10) || 0;
+      const totalPrice = pricePerSeat * seats;
+      document.getElementById('total-price').textContent = totalPrice.toFixed(2);
+  });
+</script>
+{% endblock %}
