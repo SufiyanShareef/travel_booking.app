@@ -1,0 +1,70 @@
+.travel-card {
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.travel-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15) !important;
+    border-color: var(--primary-blue);
+}
+
+.route-line {
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, var(--primary-blue) 50%, transparent 100%);
+    margin: 0 auto 15px;
+    width: 80%;
+    position: relative;
+}
+
+.route-line::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -4px;
+    width: 10px;
+    height: 10px;
+    background: var(--primary-blue);
+    border-radius: 50%;
+}
+
+.route-line::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: -4px;
+    width: 10px;
+    height: 10px;
+    background: var(--primary-blue);
+    border-radius: 50%;
+}
+
+.progress {
+    border-radius: 10px;
+    background: #f1f5f9;
+}
+
+.progress-bar {
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.py-6 {
+    padding: 4rem 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-header h6 {
+        font-size: 0.9rem;
+    }
+
+    .route-line {
+        width: 90%;
+    }
+
+    .btn-lg {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+}

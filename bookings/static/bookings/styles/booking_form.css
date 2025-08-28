@@ -1,0 +1,40 @@
+
+    /* Custom styles for the booking form */
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .card-header {
+        border-radius: 15px 15px 0 0 !important;
+    }
+    
+    .input-group-text {
+        border-radius: 8px 0 0 8px;
+        border: 2px solid #e2e8f0;
+        border-right: none;
+        background: #f8fafc;
+    }
+    
+    .form-control-lg {
+        border-radius: 0 8px 8px 0;
+        border-left: none;
+    }
+    
+    .alert {
+        border-radius: 10px;
+        border: none;
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .btn-lg {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        
+        .me-3 {
+            margin-right: 0 !important;
+        }
+    }

@@ -1,30 +1,120 @@
 {% extends 'bookings/base.html' %}
-
+{% load static %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'bookings/styles/login.css' %}">
+{% endblock %}
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="text-center">Login</h3>
+    <div class="col-xl-5 col-lg-6 col-md-6">
+        <!-- Header Section -->
+        <div class="text-center mb-4">
+            <div class="auth-icon bg-primary bg-gradient rounded-circle p-3 mb-3 mx-auto">
+                <i class="fas fa-sign-in-alt fa-2x text-white"></i>
             </div>
-            <div class="card-body">
-                <form method="POST">
+            <h2 class="fw-bold text-dark mb-2">Welcome Back</h2>
+            <p class="text-muted">Sign in to continue your journey</p>
+        </div>
+
+        <!-- Login Card -->
+        <div class="card border-0 shadow-lg">
+            <div class="card-header bg-primary text-white text-center py-4">
+                <h4 class="mb-0">Sign In to TravelBooker</h4>
+            </div>
+            <div class="card-body p-5">
+                <form method="POST" class="needs-validation" novalidate>
                     {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
+                    
+                    <!-- Username Field -->
+                    <div class="mb-4">
+                        <label for="username" class="form-label fw-semibold">
+                            <i class="fas fa-user me-2 text-primary"></i>Username
+                        </label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="username" name="username" 
+                                   placeholder="Enter your username" required>
+                        </div>
+                        <div class="invalid-feedback">
+                            <i class="fas fa-exclamation-circle me-1"></i>Please enter your username.
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
+
+                    <!-- Password Field -->
+                    <div class="mb-4">
+                        <label for="password" class="form-label fw-semibold">
+                            <i class="fas fa-lock me-2 text-primary"></i>Password
+                        </label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" name="password" 
+                                   placeholder="Enter your password" required>
+                        </div>
+                        <div class="invalid-feedback">
+                            <i class="fas fa-exclamation-circle me-1"></i>Please enter your password.
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Login</button>
+
+                    <!-- Remember Me & Forgot Password -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="rememberMe" name="remember_me">
+                            <label class="form-check-label small text-muted" for="rememberMe">
+                                Remember me
+                            </label>
+                        </div>
+                        <a href="#" class="small text-primary text-decoration-none">
+                            Forgot Password?
+                        </a>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg py-3">
+                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                        </button>
+                    </div>
                 </form>
-                <div class="text-center mt-3">
-                    <small>Need an account? <a href="{% url 'bookings:register' %}">Register here</a></small>
+
+                <!-- Divider -->
+                <div class="position-relative my-4">
+                    <hr>
+                    <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small">New here?</span>
                 </div>
+
+                <!-- Register Link -->
+                <div class="text-center">
+                    <p class="mb-0 text-muted">Don't have an account yet?</p>
+                    <a href="{% url 'bookings:register' %}" class="btn btn-outline-primary btn-sm mt-2">
+                        <i class="fas fa-user-plus me-2"></i>Create Account
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Access -->
+        <div class="text-center mt-4">
+            <p class="small text-muted mb-2">Quick access for demo purposes:</p>
+            <div class="d-flex justify-content-center gap-2 flex-wrap">
+                <small class="text-muted">Try: <strong>demo_user</strong> / <strong>demopass123</strong></small>
             </div>
         </div>
     </div>
 </div>
+
+
+
+<script>
+    // Add Bootstrap validation styling
+    document.addEventListener('DOMContentLoaded', function() {
+        const forms = document.querySelectorAll('.needs-validation');
+        
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    });
+</script>
 {% endblock %}

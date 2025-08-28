@@ -1,22 +1,78 @@
 {% extends 'bookings/base.html' %}
 
+{% load static %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'bookings/styles/booking_form.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="text-center">Book Your Trip</h3>
+    <div class="col-md-8 col-lg-6">
+        <!-- Main Booking Card -->
+        <div class="card border-0 shadow-lg">
+            <div class="card-header bg-primary text-white py-3">
+                <h3 class="text-center mb-0">
+                    <i class="fas fa-ticket-alt me-2"></i>Book Your Trip
+                </h3>
             </div>
-            <div class="card-body">
-                <!-- Travel Option Details -->
-                <div class="card mb-4">
+            <div class="card-body p-4">
+                <!-- Travel Option Details Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-light py-3">
+                        <h5 class="mb-0">
+                            <i class="fas fa-route me-2 text-primary"></i>Trip Details
+                        </h5>
+                    </div>
                     <div class="card-body">
-                        <h5>Trip Details</h5>
-                        <p><strong>Type:</strong> {{ travel_options.get_type_display }}</p>
-                        <p><strong>Route:</strong> {{ travel_options.source }} to {{ travel_options.destination }}</p>
-                        <p><strong>Departure:</strong> {{ travel_options.departure_time|date:"M d, Y H:i" }}</p>
-                        <p><strong>Price per seat:</strong> ${{ travel_options.price }}</p>
-                        <p><strong>Available seats:</strong> {{ travel_options.available_seats }}</p>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-plane me-2 text-primary"></i>
+                                    <div>
+                                        <small class="text-muted d-block">Type</small>
+                                        <strong>{{ travel_options.get_type_display }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-route me-2 text-primary"></i>
+                                    <div>
+                                        <small class="text-muted d-block">Route</small>
+                                        <strong>{{ travel_options.source }} to {{ travel_options.destination }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-calendar-alt me-2 text-primary"></i>
+                                    <div>
+                                        <small class="text-muted d-block">Departure</small>
+                                        <strong>{{ travel_options.departure_time|date:"M d, Y H:i" }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-tag me-2 text-primary"></i>
+                                    <div>
+                                        <small class="text-muted d-block">Price per seat</small>
+                                        <strong class="text-success">${{ travel_options.price }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-chair me-2 text-primary"></i>
+                                    <div>
+                                        <small class="text-muted d-block">Available seats</small>
+                                        <strong class="{% if travel_options.available_seats > 10 %}text-success{% elif travel_options.available_seats > 0 %}text-warning{% else %}text-danger{% endif %}">
+                                            {{ travel_options.available_seats }}
+                                        </strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -24,20 +80,37 @@
                 <form method="POST">
                     {% csrf_token %}
                     
-                    <div class="mb-3">
-                        <label for="number_of_seats" class="form-label">Number of Seats</label>
-                        <input type="number" class="form-control" id="number_of_seats" name="number_of_seats" 
-                               min="1" max="{{ travel_options.available_seats }}" value="1" required>
-                        <div class="form-text">Maximum {{ travel_option.available_seats }} seats available.</div>
+                    <div class="mb-4">
+                        <label for="number_of_seats" class="form-label fw-semibold">
+                            <i class="fas fa-users me-1 text-primary"></i>Number of Seats
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">
+                                <i class="fas fa-chair text-primary"></i>
+                            </span>
+                            <input type="number" class="form-control form-control-lg" id="number_of_seats" name="number_of_seats" 
+                                   min="1" max="{{ travel_options.available_seats }}" value="1" required>
+                        </div>
+                        <div class="form-text text-muted mt-1">
+                            Maximum {{ travel_options.available_seats }} seats available.
+                        </div>
                     </div>
 
-                    <div class="alert alert-info">
-                        <strong>Total Price: $<span id="total-price">{{ travel_options.price }}</span></strong>
+                    <!-- Total Price Display -->
+                    <div class="alert alert-primary d-flex align-items-center mb-4">
+                        <i class="fas fa-receipt fa-2x me-3"></i>
+                        <div>
+                            <h5 class="mb-0">Total Price: <span class="text-success">$<span id="total-price">{{ travel_options.price }}</span></span></h5>
+                        </div>
                     </div>
 
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary btn-lg">Confirm Booking</button>
-                        <a href="{% url 'bookings:travel-list' %}" class="btn btn-outline-secondary btn-lg">Cancel</a>
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg px-5 py-3 me-3">
+                            <i class="fas fa-check-circle me-2"></i>Confirm Booking
+                        </button>
+                        <a href="{% url 'bookings:travel-list' %}" class="btn btn-outline-secondary btn-lg px-5 py-3">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
                     </div>
                 </form>
             </div>
@@ -45,14 +118,25 @@
     </div>
 </div>
 
+
+
 <script>
     // Calculate total price dynamically
-     document.getElementById('number_of_seats').addEventListener('input', function() {
-      // Inject the price from Django context, ensure it's a float and no quotes around it
-      const pricePerSeat = {{ travel_options.price|floatformat:2 }};
-      const seats = parseInt(this.value, 10) || 0;
-      const totalPrice = pricePerSeat * seats;
-      document.getElementById('total-price').textContent = totalPrice.toFixed(2);
-  });
+    document.addEventListener('DOMContentLoaded', function() {
+        const seatInput = document.getElementById('number_of_seats');
+        const totalPriceElement = document.getElementById('total-price');
+        const pricePerSeat = {{ travel_options.price }};
+        
+        function calculateTotal() {
+            const seats = parseInt(seatInput.value, 10) || 0;
+            const totalPrice = pricePerSeat * seats;
+            totalPriceElement.textContent = totalPrice.toFixed(2);
+        }
+        
+        seatInput.addEventListener('input', calculateTotal);
+        
+        // Initialize on page load
+        calculateTotal();
+    });
 </script>
 {% endblock %}

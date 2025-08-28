@@ -1,20 +1,32 @@
 {% extends 'bookings/base.html' %}
+{% load static %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'bookings/styles/travel_list.css' %}">
+{% endblock %}
 
 {% block content %}
 <div class="row">
-    <div class="col-md-12">
-        <h2 class="mb-4">Available Travel Options</h2>
+    <div class="col-12">
+        <!-- Page Header -->
+        <div class="text-center mb-5">
+            <h1 class="display-5 fw-bold text-dark mb-3">
+                <i class="fas fa-search me-2 text-primary"></i>Explore Travel Options
+            </h1>
+            <p class="lead text-muted">Discover your next adventure from our curated selection</p>
+        </div>
 
-        <!-- Filter Form -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5>Filter Options</h5>
+        <!-- Filter Form Card -->
+        <div class="card border-0 shadow-lg mb-5">
+            <div class="card-header bg-primary text-white py-3">
+                <h5 class="mb-0">
+                    <i class="fas fa-filter me-2"></i>Search & Filter
+                </h5>
             </div>
-            <div class="card-body">
-                <form method="GET" class="row g-3">
+            <div class="card-body p-4">
+                <form method="GET" class="row g-4">
                     <div class="col-md-3">
-                        <label class="form-label">Type</label>
-                        <select name="type" class="form-select">
+                        <label class="form-label fw-semibold">Travel Type</label>
+                        <select name="type" class="form-select form-select-lg">
                             <option value="">All Types</option>
                             {% for value, display in TRAVEL_TYPES %}
                             <option value="{{ value }}" {% if value == selected_type %}selected{% endif %}>
@@ -24,54 +36,138 @@
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label">From</label>
-                        <input type="text" name="source" class="form-control" placeholder="Source"
-                            value="{{ request.GET.source }}">
+                        <label class="form-label fw-semibold">From</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                            <input type="text" name="source" class="form-control form-control-lg" placeholder="Departure city"
+                                value="{{ request.GET.source }}">
+                        </div>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label">To</label>
-                        <input type="text" name="destination" class="form-control" placeholder="Destination"
-                            value="{{ request.GET.destination }}">
+                        <label class="form-label fw-semibold">To</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                            <input type="text" name="destination" class="form-control form-control-lg" placeholder="Destination city"
+                                value="{{ request.GET.destination }}">
+                        </div>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label">Date</label>
-                        <input type="date" name="date" class="form-control" value="{{ request.GET.date }}">
+                        <label class="form-label fw-semibold">Departure Date</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                            <input type="date" name="date" class="form-control form-control-lg" value="{{ request.GET.date }}">
+                        </div>
                     </div>
                     <div class="col-12">
-                        <button type="submit" class="btn btn-primary">Apply Filters</button>
-                        <a href="{% url 'bookings:travel-list' %}" class="btn btn-outline-secondary">Clear</a>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button type="submit" class="btn btn-primary btn-lg px-4">
+                                <i class="fas fa-search me-2"></i>Search Flights
+                            </button>
+                            <a href="{% url 'bookings:travel-list' %}" class="btn btn-outline-secondary btn-lg px-4">
+                                <i class="fas fa-times me-2"></i>Clear Filters
+                            </a>
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
 
+        <!-- Results Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-semibold">
+                <i class="fas fa-list me-2 text-primary"></i>
+                Available Trips
+                {% if travel_options %}
+                <span class="badge bg-primary ms-2 fs-6">{{ travel_options.count }} results</span>
+                {% endif %}
+            </h3>
+            {% if travel_options %}
+            <div class="text-muted">
+                <small>Sorted by: Departure Time</small>
+            </div>
+            {% endif %}
+        </div>
+
         <!-- Travel Options List -->
         {% if travel_options %}
-        <!-- DEBUG: Show raw count -->
-        <div class="alert alert-info">
-            DEBUG: Found {{ travel_options.count }} travel options in the database.
-        </div>
         <div class="row">
             {% for travel in travel_options %}
-            <div class="col-md-6 mb-4">
-                <div class="card h-100">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">
-                            {{ travel.get_type_display }}: {{ travel.source }} to {{ travel.destination }}
-                        </h5>
+            <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-hover travel-card">
+                    <div class="card-header {% if travel.type == 'FL' %}bg-info{% elif travel.type == 'TR' %}bg-success{% else %}bg-warning{% endif %} text-white py-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0 fw-semibold">
+                                <i class="fas 
+                                    {% if travel.type == 'FL' %}fa-plane
+                                    {% elif travel.type == 'TR' %}fa-train
+                                    {% else %}fa-bus{% endif %} me-2"></i>
+                                {{ travel.get_type_display }}
+                            </h6>
+                            <span class="badge bg-light text-dark">
+                                #{{ travel.id }}
+                            </span>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <p class="card-text">
-                            <strong>Departure:</strong> {{ travel.departure_time|date:"M d, Y H:i" }}<br>
-                            <strong>Price:</strong> ${{ travel.price }}<br>
-                            <strong>Available Seats:</strong> {{ travel.available_seats }}
-                        </p>
+                    
+                    <div class="card-body p-4">
+                        <!-- Route -->
+                        <div class="text-center mb-4">
+                            <div class="route-line bg-primary"></div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="fw-bold fs-5 text-dark">{{ travel.source }}</span>
+                                <i class="fas fa-arrow-right text-primary mx-3"></i>
+                                <span class="fw-bold fs-5 text-dark">{{ travel.destination }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Details -->
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="text-center">
+                                    <i class="fas fa-calendar-alt text-primary mb-2"></i>
+                                    <h6 class="fw-semibold mb-1">Departure</h6>
+                                    <p class="text-muted mb-0 small">{{ travel.departure_time|date:"M d, Y" }}</p>
+                                    <p class="text-muted mb-0 small">{{ travel.departure_time|date:"H:i" }}</p>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="text-center">
+                                    <i class="fas fa-tag text-primary mb-2"></i>
+                                    <h6 class="fw-semibold mb-1">Price</h6>
+                                    <p class="text-success fw-bold fs-5 mb-0">${{ travel.price }}</p>
+                                    <small class="text-muted">per seat</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Availability -->
+                        <div class="mt-4 text-center">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-muted">Available Seats:</span>
+                                <span class="fw-semibold {% if travel.available_seats > 10 %}text-success{% elif travel.available_seats > 0 %}text-warning{% else %}text-danger{% endif %}">
+                                    {{ travel.available_seats }}
+                                </span>
+                            </div>
+                            <div class="progress mb-3" style="height: 8px;">
+                                <div class="progress-bar 
+                                    {% if travel.available_seats > 10 %}bg-success
+                                    {% elif travel.available_seats > 0 %}bg-warning
+                                    {% else %}bg-danger{% endif %}" 
+                                    style="width: {% widthratio travel.available_seats 50 100 %}%">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-footer">
+                    
+                    <div class="card-footer bg-transparent border-0 pt-0">
                         {% if travel.available_seats > 0 %}
-                        <a href="{% url 'bookings:booking-create' travel.id %}" class="btn btn-primary">Book Now</a>
+                        <a href="{% url 'bookings:booking-create' travel.id %}" class="btn btn-primary w-100 btn-lg">
+                            <i class="fas fa-ticket-alt me-2"></i>Book Now
+                        </a>
                         {% else %}
-                        <button class="btn btn-secondary" disabled>Sold Out</button>
+                        <button class="btn btn-secondary w-100 btn-lg" disabled>
+                            <i class="fas fa-times-circle me-2"></i>Sold Out
+                        </button>
                         {% endif %}
                     </div>
                 </div>
@@ -79,10 +175,17 @@
             {% endfor %}
         </div>
         {% else %}
-        <div class="alert alert-info">
-            No travel options found matching your criteria.
+        <!-- Empty State -->
+        <div class="text-center py-6">
+            <i class="fas fa-search fa-4x text-muted mb-4"></i>
+            <h4 class="text-muted mb-3">No travel options found</h4>
+            <p class="text-muted mb-4">Try adjusting your search criteria or explore all available options</p>
+            <a href="{% url 'bookings:travel-list' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-refresh me-2"></i>View All Options
+            </a>
         </div>
         {% endif %}
     </div>
 </div>
+
 {% endblock %}

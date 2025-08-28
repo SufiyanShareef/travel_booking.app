@@ -44,10 +44,10 @@ def travel_list(request):
     if date:
         travel_options = travel_options.filter(date=date)
 
-    print(f"DEBUG: Travel options query: {travel_options.query}")
-    print(f"DEBUG: Found {travel_options.count()} travel options")
-    for travel in travel_options:
-        print(f"DEBUG: {travel.source} to {travel.destination}")
+    # print(f"DEBUG: Travel options query: {travel_options.query}")
+    # print(f"DEBUG: Found {travel_options.count()} travel options")
+    # for travel in travel_options:
+    #     print(f"DEBUG: {travel.source} to {travel.destination}")
 
     context = {
         'travel_options': travel_options,
@@ -65,6 +65,7 @@ def travel_list(request):
 
 @login_required
 def profile(request):
+    print(f"[DEBUG] Method: {request.method}")
     if request.method == 'POST':
         user_form = UseeUpdateForm(request.POST, instance=request.user)
         profile_form = ProfileUpdateForm(request.POST, instance=request.user.profile)
@@ -73,16 +74,17 @@ def profile(request):
             user_form.save()
             profile_form.save()
             messages.success(request, 'Your profile has been updated!')
-            return redirect('profile')
-        else:
-            user_form = UseeUpdateForm(instance=request.user)
-            profile_form = ProfileUpdateForm(instance=request.user.profile)
+            return redirect('bookings:profile')
+    else:
+        print("[DEBUG] Handling GET")
+        user_form = UseeUpdateForm(instance=request.user)
+        profile_form = ProfileUpdateForm(instance=request.user.profile)
 
-        context = {
-            'user_form': user_form,
-            'profile_form': profile_form
-        }
-        return render(request, 'bookings/profile.html', context)
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form
+    }
+    return render(request, 'bookings/profile.html', context)
 
 @login_required
 def bookings_create(request, travel_id):

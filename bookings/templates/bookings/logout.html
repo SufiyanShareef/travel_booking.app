@@ -1,17 +1,98 @@
 {% extends 'bookings/base.html' %}
-
+{% load static %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'bookings/styles/logout.css' %}">
+{% endblock %}
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="text-center">Logged Out</h3>
+    <div class="col-xl-6 col-lg-5 col-md-6">
+        <!-- Header Section -->
+        <div class="text-center mb-4">
+            <div class="auth-icon bg-primary bg-gradient rounded-circle p-3 mb-3 mx-auto">
+                <i class="fas fa-sign-out-alt fa-2x text-white"></i>
             </div>
-            <div class="card-body text-center">
-                <p>You have been successfully logged out.</p>
-                <a href="{% url 'bookings:login' %}" class="btn btn-primary">Login Again</a>
+            <h2 class="fw-bold text-dark mb-2">See You Soon!</h2>
+            <p class="text-muted">You've been successfully logged out</p>
+        </div>
+
+        <!-- Logout Card -->
+        <div class="card border-0 shadow-lg">
+            <div class="card-header bg-primary text-white text-center py-4">
+                <h4 class="mb-0">Logged Out Successfully</h4>
             </div>
+            <div class="card-body p-5 text-center">
+                <!-- Success Icon -->
+                <div class="success-icon mb-4">
+                    <i class="fas fa-check-circle fa-4x text-success"></i>
+                </div>
+                
+                <!-- Message -->
+                <h5 class="fw-semibold text-dark mb-3">You're all signed out</h5>
+                <p class="text-muted mb-4">
+                    Thank you for using TravelBooker. Your session has been securely ended.
+                </p>
+
+                <!-- Stats Summary -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <div class="border rounded p-3">
+                            <i class="fas fa-suitcase fa-2x text-primary mb-2"></i>
+                            <h6 class="fw-bold mb-1">Trips Booked</h6>
+                            <p class="text-success fw-bold mb-0">{% if user.booking_set.count %}{{ user.booking_set.count }}{% else %}0{% endif %}</p>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="border rounded p-3">
+                            <i class="fas fa-globe fa-2x text-primary mb-2"></i>
+                            <h6 class="fw-bold mb-1">Destinations</h6>
+                            <p class="text-success fw-bold mb-0">{% if user_destinations %}{{ user_destinations }}{% else %}0{% endif %}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-grid gap-2">
+                    <a href="{% url 'bookings:login' %}" class="btn btn-primary btn-lg py-3">
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign In Again
+                    </a>
+                    <a href="{% url 'bookings:home' %}" class="btn btn-outline-primary btn-lg py-3">
+                        <i class="fas fa-home me-2"></i>Return Home
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Message -->
+        <div class="text-center mt-4">
+            <div class="card border-0 bg-light">
+                <div class="card-body py-3">
+                    <i class="fas fa-shield-alt text-success me-2"></i>
+                    <small class="text-muted">Your session was ended securely. Come back soon!</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Return -->
+        <div class="text-center mt-3">
+            <p class="small text-muted mb-0">
+                Missing your travels? 
+                <a href="{% url 'bookings:travel-list' %}" class="text-primary text-decoration-none">
+                    Browse destinations
+                </a>
+            </p>
         </div>
     </div>
 </div>
+
+
+
+<script>
+    // Add a slight delay for the success animation
+    document.addEventListener('DOMContentLoaded', function() {
+        const successIcon = document.querySelector('.success-icon');
+        setTimeout(() => {
+            successIcon.style.animation = 'bounceIn 0.6s ease';
+        }, 100);
+    });
+</script>
 {% endblock %}
