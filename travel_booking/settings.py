@@ -32,7 +32,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # DEBUG = os.environ.get('DEBUG', 'False').lower() in ['true', '1', 't', 'y', 'yes']
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*','tarvel-bookings.up.railway.app']
 CSRF_TRUSTED_ORIGINS = [
     "https://travel-bookings.up.railway.app",
 ]
