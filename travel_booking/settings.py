@@ -86,16 +86,19 @@ WSGI_APPLICATION = 'travel_booking.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+import os
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DB_NAME'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD':os.environ.get('DB_PASSWORD'),
-        'HOST':os.environ.get('DB_HOST','localhost'),
-        'PORT':os.environ.get('DB_PORT', default='3306'),
+        'NAME': os.environ.get('MYSQL_DATABASE'),       # Railway DB name
+        'USER': os.environ.get('MYSQLUSER'),           # Railway DB user
+        'PASSWORD': os.environ.get('MYSQLPASSWORD'),   # Railway DB password
+        'HOST': os.environ.get('MYSQLHOST', 'localhost'), # Railway DB host
+        'PORT': os.environ.get('MYSQLPORT', '3306'),   # Railway DB port
     }
 }
+
 
 
 # Password validation
