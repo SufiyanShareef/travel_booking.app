@@ -59,11 +59,14 @@ class Booking(models.Model):
         choices=STATUS_TYPES,
         default=CONFIRMED,
     )
-
-    def __str__(self, *args, **kwargs):
-
+    def save(self, *args, **kwargs):
+    # Ensure total_price is always correct before saving
         self.total_price = self.travel_option.price * self.number_of_seats
-        super().save(*args,**kwargs)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Booking {self.id} by {self.user.username} ({self.get_status_display()})"
+
         
 
 
